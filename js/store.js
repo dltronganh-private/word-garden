@@ -25,6 +25,7 @@ export function defaultSettings() {
     model: DEFAULT_MODEL,
     showHanviet: true,
     theme: "desk", // "desk" (study desk) or "lantern" (lantern garden)
+    speechRate: "normal", // read-aloud speed: "slow" or "normal"
     showWeakEdits: false,
   };
 }

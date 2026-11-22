@@ -315,3 +315,9 @@ html[data-theme="lantern"] { background: var(--sky-1); }
   background: var(--paper); color: var(--ink); border-radius: 8px; padding: 4px 10px; width: fit-content; max-width: 100%;
 }
 [data-theme="lantern"] .view > section > h2 { margin-top: 14px; }
+.tok.plain { border-bottom: 0; }
+.dict-sense + .dict-sense { border-top: 1px dashed rgba(80, 60, 40, .25); margin-top: 6px; padding-top: 4px; }
+.dict-ai { margin-top: 8px; }
+.sent-list { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; }
+.sent-btn { font: inherit; font-size: 1.1rem; text-align: left; padding: 8px 10px; min-height: 44px; border-radius: 10px; border: 1px solid rgba(80, 60, 40, .2); background: rgba(255, 255, 255, .6); color: var(--ink); cursor: pointer; }
+.sent-btn.on { outline: 3px solid var(--accent); }

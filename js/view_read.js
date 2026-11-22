@@ -8,6 +8,8 @@ import { addCustom, hanvietFor, aiMeaningRow } from "./words.js";
 import { getFeedback, LEVEL_VI } from "./feedback.js";
 import { ERROR_TEXT, costUsd } from "./api.js";
 import { newsSection, pasteSection, findText, sourceLine } from "./view_news.js";
+import { showLookup, dictCard } from "./view_dict.js";
+import { speechCard, sayWordButton } from "./view_speech.js";
 
 const knowsFn = (st, lang) => (t) => {
   const id = t.kind === "pack" ? t.word.id : `${lang}:${t.lemma}`;
@@ -22,7 +24,7 @@ export function viewRead(ctx) {
 function textList(ctx) {
   const out = h("section", {}, h("h1", { text: "Đọc" }),
     h("p", { class: "muted", text: "Bài ngắn theo vốn từ. Bấm vào từ có gạch chân để xem nghĩa và thêm vào thẻ." }),
-    newsSection(ctx), pasteSection(ctx), h("h2", { text: "Bài có sẵn" }));
+    dictCard(ctx), newsSection(ctx), pasteSection(ctx), h("h2", { text: "Bài có sẵn" }));
   for (const l of LANGS) {
     if (!ctx.st.settings.langs[l].on) continue;
     out.append(h("h2", {}, h("span", { class: "lang-dot " + l }), LANG_VI[l]));
@@ -51,9 +53,12 @@ function readText(ctx, text) {
   tokens.forEach((t) => {
     if (t.kind === "pack" || t.kind === "gloss") {
       body.append(h("button", { class: "tok " + t.kind, onclick: () => showWord(ctx, pop, lang, t) , text: t.surface }));
+    } else if (t.kind === "plain" && t.surface.trim()) {
+      // Words outside the pack open the built-in dictionary.
+      body.append(h("button", { class: "tok plain", onclick: () => { pop.hidden = false; showLookup(ctx, pop, lang, t.lemma, plainText(tokens)); }, text: t.surface }));
     } else body.append(document.createTextNode(t.surface));
   });
-  out.append(h("div", { class: "card" }, body), pop);
+  out.append(h("div", { class: "card" }, body), pop, speechCard(ctx, lang, plainText(tokens)));
   out.append(writeBox(ctx, text, plainText(tokens)));
   return out;
 }
@@ -68,7 +73,7 @@ function showWord(ctx, pop, lang, t) {
   const added = isSeen(st, id);
   pop.hidden = false;
   pop.replaceChildren(...[
-    h("p", { class: "head small-head", lang: LANG_TAG[lang], text: head }),
+    h("p", { class: "head small-head", lang: LANG_TAG[lang], text: head }), sayWordButton(ctx, lang, head),
     h("p", { class: "reading", lang: LANG_TAG[lang], text: reading || "" }),
     h("p", { class: "meaning", text: meaning || "" }),
     t.kind === "pack" ? aiMeaningRow(t.word, st, ctx.save, h) : null,
