@@ -1,0 +1,323 @@
+/* Mobile first, warm and soft. Touch targets >= 44 px for main buttons, >= 24 px elsewhere. */
+:root {
+  --bg: #fff7ee; --card: #ffffff; --ink: #2d2a32; --muted: #6b6470; --line: #eadfd3;
+  --accent: #e8706a; --accent-ink: #ffffff; --stamp: #d9534f; --ok: #2f8f5b; --warn: #fff1d6; --warn-line: #e8b14a;
+  --zh: #e8706a; --ja: #6a8de8; --ko: #3fae8c;
+  --g1: #f3d2d0; --g2: #f6e3c4; --g3: #d5ecdc; --g4: #d6e4f7;
+  --radius: 16px;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #1d1b20; --card: #2a2730; --ink: #f1ecf4; --muted: #b5adbb; --line: #3d3844;
+    --accent: #f08a84; --accent-ink: #1d1b20; --stamp: #f07a75; --ok: #6fd39c; --warn: #3a3020; --warn-line: #c9952f;
+    --g1: #5a3634; --g2: #574a30; --g3: #2f4d3b; --g4: #2f4260; }
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 var(--font); min-height: 100svh; }
+#app { max-width: 560px; margin: 0 auto; min-height: 100svh; display: flex; flex-direction: column; }
+.view { flex: 1; padding: 16px max(16px, env(safe-area-inset-left)) 96px max(16px, env(safe-area-inset-right)); }
+h1 { font-size: 1.4rem; margin: 4px 0 8px; }
+h2 { font-size: 1.1rem; margin: 0 0 8px; display: flex; align-items: center; gap: 8px; }
+p { margin: 6px 0; }
+.muted { color: var(--muted); }
+.small { font-size: .875rem; }
+.big { font-size: 1.15rem; font-weight: 700; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; margin: 12px 0; box-shadow: 0 2px 0 var(--line); }
+.warn { background: var(--warn); border-color: var(--warn-line); }
+.warn-soft { background: var(--warn); border: 1px dashed var(--warn-line); border-radius: 12px; }
+.warn-soft.inner { padding: 8px 12px; margin-top: 10px; }
+.note { font-size: .9rem; color: var(--muted); }
+.link { text-decoration: underline; cursor: pointer; }
+.loading { padding: 32px; text-align: center; color: var(--muted); }
+
+.btn { font: inherit; min-height: 44px; padding: 8px 16px; border-radius: 999px; border: 2px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
+.btn:focus-visible, .tab:focus-visible, .tok:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--ja); outline-offset: 2px; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 700; }
+.btn.ghost { border-color: transparent; background: transparent; color: var(--muted); padding-left: 4px; }
+.btn.tiny { min-height: 32px; padding: 2px 12px; font-size: .875rem; }
+.btn.wide { width: 100%; }
+.btn:disabled { opacity: .55; cursor: default; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; }
+.row-btn { width: 100%; display: flex; justify-content: space-between; align-items: center; font: inherit; color: inherit; text-align: left; cursor: pointer; min-height: 52px; }
+
+.tabs { position: fixed; bottom: 0; left: 0; right: 0; display: flex; justify-content: center; background: var(--card); border-top: 1px solid var(--line);
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom)); }
+.tab { flex: 1; max-width: 112px; min-height: 48px; font: inherit; font-size: .8rem; border: 0; background: transparent; color: var(--muted); border-radius: 12px; cursor: pointer; }
+.tab.on { color: var(--accent); font-weight: 700; background: var(--bg); }
+
+.lang-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; flex: none; }
+.lang-dot.zh { background: var(--zh); } .lang-dot.ja { background: var(--ja); } .lang-dot.ko { background: var(--ko); }
+
+.stamp-box { text-align: center; }
+.stamp-box svg { display: block; margin: 4px auto; }
+.stamp-empty { width: 120px; height: 120px; margin: 4px auto; border-radius: 50%; border: 4px dashed var(--line); }
+@media (prefers-reduced-motion: no-preference) {
+  .stamp-box svg { animation: press .35s ease-out; }
+  @keyframes press { from { transform: scale(1.35); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+}
+
+.flash { text-align: center; min-height: 200px; display: flex; flex-direction: column; justify-content: center; }
+.head { font-size: 2.6rem; line-height: 1.2; margin: 8px 0; word-break: keep-all; }
+.small-head { font-size: 1.8rem; }
+.meaning-q { font-size: 1.3rem; font-weight: 600; }
+.reading { font-size: 1.1rem; color: var(--muted); }
+.meaning { font-size: 1.15rem; }
+.back { border-top: 1px dashed var(--line); margin-top: 10px; padding-top: 8px; }
+.hv { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: center; margin-top: 8px; font-size: .95rem; }
+.hv input { width: 10em; }
+.tag { margin-left: 6px; font-size: .75rem; padding: 1px 8px; border-radius: 999px; background: var(--warn); border: 1px solid var(--warn-line); }
+.grades { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 12px; }
+.grade { display: flex; flex-direction: column; align-items: center; padding: 6px 2px; border-radius: 14px; min-height: 56px; }
+.grade small { font-size: .75rem; color: var(--muted); }
+.g1 { background: var(--g1); } .g2 { background: var(--g2); } .g3 { background: var(--g3); } .g4 { background: var(--g4); }
+
+.text { font-size: 1.35rem; line-height: 2; margin: 0; }
+.tok { font: inherit; border: 0; background: none; color: inherit; padding: 0 1px; border-bottom: 2px solid var(--accent); cursor: pointer; min-height: 24px; }
+.tok.gloss { border-bottom-style: dotted; border-bottom-color: var(--ja); }
+.pop { position: sticky; bottom: 76px; z-index: 2; box-shadow: 0 6px 18px rgba(0, 0, 0, .15); }
+textarea, input[type=text], input[type=password], input[type=number], input[type=date], select {
+  font: inherit; width: 100%; padding: 10px 12px; border-radius: 12px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); min-height: 44px; }
+input[type=number] { width: 6.5em; }
+input[type=date] { width: auto; }
+label { display: block; margin: 8px 0; }
+label.check { display: flex; gap: 8px; align-items: flex-start; }
+label.check input { width: 22px; height: 22px; flex: none; margin-top: 2px; }
+fieldset { border: 1px solid var(--line); border-radius: 12px; margin: 10px 0; }
+legend { display: flex; align-items: center; font-weight: 700; padding: 0 4px; }
+.mins { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.mins label { margin: 0; font-size: .85rem; }
+.mins input { width: 100%; }
+
+.ai-note { font-size: .85rem; color: var(--muted); border-left: 3px solid var(--warn-line); padding-left: 8px; }
+.praise { font-weight: 600; color: var(--ok); }
+.ok { color: var(--ok); font-weight: 700; }
+.edit { border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; margin: 8px 0; }
+.edit.weak { opacity: .7; border-style: dashed; }
+.chip { display: inline-block; font-size: .75rem; font-weight: 700; padding: 1px 10px; border-radius: 999px; }
+.lv-error .chip { background: var(--g1); } .lv-unnatural .chip { background: var(--g2); } .lv-suggestion .chip { background: var(--g4); }
+
+.week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+.day { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 0; border-radius: 12px; font-size: .8rem; }
+.day.today { background: var(--bg); outline: 2px solid var(--accent); }
+.day .dnum { font-weight: 700; font-size: 1rem; }
+.day .dot { width: 26px; height: 26px; border-radius: 50%; border: 2px dashed var(--line); }
+.day.missed .dot { border-style: solid; border-color: var(--g1); }
+.day.rest .dot { border: 0; background: var(--g4); }
+.day .dmin { color: var(--muted); font-size: .75rem; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.src p { margin: 2px 0; }
+a { color: var(--ja); }
+.news-btn { min-height: 44px; border: 0; border-bottom: 1px solid var(--line); background: none; padding: 6px 0; }
+.video iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 12px; background: var(--line); }
+.src-line { border-left: 3px solid var(--ja); padding-left: 8px; margin: 6px 0 10px; }
+.src-line a { word-break: break-word; }
+.ask { background: var(--warn); border: 1px solid var(--warn-line); border-radius: 12px; padding: 8px 12px; margin: 8px 0; }
+.result-json { white-space: pre-wrap; word-break: break-all; font-size: .7rem; max-height: 240px; overflow: auto; background: var(--bg); border-radius: 8px; padding: 6px; }
+.result-json:empty { display: none; }
+
+/* ===== Study-desk theme: light wood desk, pastel sticky notes with tape, an index card for flashcards,
+   ruled notebook paper for reading, a ruler for the tab bar. Mood: calm and warm (high-key, soft shapes).
+   Text sits on paper, never straight on the wood grain, so contrast stays readable. ===== */
+:root {
+  --wood: #dfc29b; --wood-2: #d4b48a; --wood-line: rgba(120, 80, 40, .10);
+  --muted: #554c5c;
+  --note-1: #fff3a8; --note-2: #ffd9df; --note-3: #d6f2df; --note-4: #d8e8fb; --paper: #fffdf6;
+  --tape: rgba(255, 255, 255, .55); --tape-edge: rgba(150, 120, 80, .18);
+  --rule: #c9dcef; --margin-red: #f0a6a6; --shadow: rgba(80, 50, 20, .22);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --wood: #3a2b20; --wood-2: #33251b; --wood-line: rgba(0, 0, 0, .18);
+    --muted: #c9c0cf;
+    --note-1: #4a4530; --note-2: #4a3539; --note-3: #2f4537; --note-4: #2f3d50; --paper: #2c2a2f;
+    --tape: rgba(255, 255, 255, .14); --tape-edge: rgba(0, 0, 0, .2);
+    --rule: #3b4a5c; --margin-red: #7a3e3e; --shadow: rgba(0, 0, 0, .45);
+  }
+}
+html { background: var(--wood); }
+body {
+  background-color: var(--wood);
+  /* wood grain: soft stripes, no image file */
+  background-image:
+    repeating-linear-gradient(92deg, var(--wood-line) 0 2px, transparent 2px 23px),
+    repeating-linear-gradient(88deg, transparent 0 41px, var(--wood-line) 41px 43px),
+    linear-gradient(180deg, var(--wood) 0%, var(--wood-2) 100%);
+  overflow-x: hidden;
+}
+/* Page titles: a strip of washi tape stuck on the desk. */
+.view h1 {
+  display: inline-block; padding: 4px 14px 4px 12px; background: var(--note-4);
+  transform: rotate(-1deg); box-shadow: 0 2px 4px var(--shadow); border-radius: 2px;
+}
+.view > section > p.muted, .hello p { background: var(--paper); display: inline-block; padding: 2px 8px; border-radius: 2px; }
+
+/* Cards become sticky notes: square-ish paper, pastel colours in turn, a piece of tape on top, a lifted shadow. */
+.card {
+  position: relative; border: 0; border-radius: 2px 2px 6px 2px; background: var(--note-1);
+  box-shadow: 0 1px 1px var(--shadow), 0 8px 14px -8px var(--shadow);
+  padding-top: 18px;
+}
+.card:nth-of-type(4n+2) { background: var(--note-2); transform: rotate(.5deg); }
+.card:nth-of-type(4n+3) { background: var(--note-3); transform: rotate(-.4deg); }
+.card:nth-of-type(4n) { background: var(--note-4); transform: rotate(.3deg); }
+.card:nth-of-type(4n+1) { transform: rotate(-.5deg); }
+.card::before {
+  content: ""; position: absolute; top: -9px; left: 50%; width: 76px; height: 20px; margin-left: -38px;
+  background: var(--tape); border-left: 1px dashed var(--tape-edge); border-right: 1px dashed var(--tape-edge);
+  transform: rotate(-2deg); pointer-events: none;
+}
+.card.row-btn { min-height: 56px; }
+.warn-soft { background: var(--note-2); border: 0; border-radius: 2px; box-shadow: 0 6px 12px -8px var(--shadow); }
+.warn-soft.inner { background: rgba(255, 255, 255, .45); }
+.warn { background: var(--note-2); }
+
+/* Flashcard: a white index card with blue rules and a red margin line. */
+.card.flash {
+  background-color: var(--paper); transform: none;
+  background-image:
+    linear-gradient(90deg, transparent 0 28px, var(--margin-red) 28px 30px, transparent 30px),
+    repeating-linear-gradient(180deg, transparent 0 31px, var(--rule) 31px 32px);
+  background-position: 0 0, 0 46px;
+  border-radius: 4px;
+}
+.card.flash::before { display: none; }
+
+/* Reading text: ruled notebook paper, lines in step with the text. */
+.reader .card:has(.text) { background-color: var(--paper); transform: none; }
+.text {
+  line-height: 44px; font-size: 1.35rem;
+  background-image: repeating-linear-gradient(180deg, transparent 0 43px, var(--rule) 43px 44px);
+}
+/* The word pop-up: a yellow sticky note held by tape. */
+.pop { background: var(--note-1); transform: rotate(-.6deg); }
+
+/* Inputs: lighter paper inside the notes. */
+textarea, input[type=text], input[type=password], input[type=number], input[type=date], select {
+  background: rgba(255, 255, 255, .7); border-color: rgba(80, 50, 20, .18);
+}
+@media (prefers-color-scheme: dark) {
+  textarea, input[type=text], input[type=password], input[type=number], input[type=date], select { background: rgba(0, 0, 0, .25); }
+}
+.btn { border-color: rgba(80, 50, 20, .18); background: rgba(255, 255, 255, .75); }
+@media (prefers-color-scheme: dark) { .btn { background: rgba(0, 0, 0, .25); } }
+.btn.primary { box-shadow: 0 2px 0 rgba(80, 50, 20, .25); }
+.btn.ghost { background: transparent; }
+.edit { background: rgba(255, 255, 255, .55); border: 0; border-radius: 2px; }
+.day.today { background: rgba(255, 255, 255, .6); }
+.result-json { background: rgba(255, 255, 255, .6); }
+
+/* Tab bar: a wooden ruler along the bottom edge. */
+.tabs {
+  background-color: #f6e7b8; border-top: 0; box-shadow: 0 -4px 10px var(--shadow);
+  background-image: repeating-linear-gradient(90deg, rgba(90, 60, 20, .45) 0 1px, transparent 1px 10px),
+    repeating-linear-gradient(90deg, rgba(90, 60, 20, .6) 0 1px, transparent 1px 50px);
+  background-size: 100% 7px, 100% 12px; background-repeat: repeat-x; background-position: 0 0, 0 0;
+}
+@media (prefers-color-scheme: dark) { .tabs { background-color: #5a4a30; } }
+.tab { color: #4a3a22; padding-top: 10px; }
+@media (prefers-color-scheme: dark) { .tab { color: #f3e6c8; } }
+.tab.on { background: rgba(255, 255, 255, .55); color: #b8423c; }
+@media (prefers-color-scheme: dark) { .tab.on { background: rgba(0, 0, 0, .25); color: #ffb3ad; } }
+
+/* People who ask for less motion get flat, untilted notes. */
+@media (prefers-reduced-motion: reduce) { .card, .pop, .view h1 { transform: none !important; } }
+.btn.grade.g1 { background: var(--g1); } .btn.grade.g2 { background: var(--g2); }
+.btn.grade.g3 { background: var(--g3); } .btn.grade.g4 { background: var(--g4); }
+/* Text buttons that lie on the wood get a small paper label so they stay readable. */
+.review > .btn.ghost, section > .btn.ghost { background: rgba(255, 253, 246, .8); border-radius: 2px; padding: 4px 10px; min-height: 36px; }
+@media (prefers-color-scheme: dark) { .review > .btn.ghost, section > .btn.ghost { background: rgba(0, 0, 0, .35); } }
+.card.pop { background: var(--note-1); transform: rotate(-.6deg); }
+
+/* ===== Lantern garden theme (html[data-theme="lantern"]): a dusk garden. Deep blue sky fading to a warm horizon,
+   soft watercolour blots, cream paper for every block of text, small paper lanterns drifting in the top corner.
+   Text always sits on cream paper; decorations stay behind the paper and in the margins. ===== */
+[data-theme="lantern"] {
+  --sky-1: #2b4370; --sky-2: #56689a; --sky-3: #d08a6c; --sky-4: #f4cf96;
+  --paper: #fbf3e4; --paper-edge: rgba(228, 87, 46, .10); --paper-blue: rgba(74, 93, 138, .10);
+  --ink: #2d2a32; --muted: #5a5060; --stamp: #c8452a; --accent: #c4442a;
+  --note-1: #fbf3e4; --note-2: #fbf3e4; --note-3: #fbf3e4; --note-4: #fbf3e4;
+  --rule: rgba(74, 93, 138, .2); --shadow: rgba(18, 24, 48, .35);
+}
+@media (prefers-color-scheme: dark) {
+  [data-theme="lantern"] {
+    --sky-1: #121c33; --sky-2: #243560; --sky-3: #6a4a63; --sky-4: #b5785a;
+    --paper: #f3e6cf; --ink: #2d2a32; --muted: #574c58; --shadow: rgba(0, 0, 0, .55);
+  }
+  /* Paper stays light at night, so text inside it keeps the light-mode colours. */
+  [data-theme="lantern"] .card, [data-theme="lantern"] .card * { color: var(--ink); }
+  [data-theme="lantern"] .card .muted, [data-theme="lantern"] .card .small { color: var(--muted); }
+}
+html[data-theme="lantern"] { background: var(--sky-1); }
+[data-theme="lantern"] body {
+  background-color: var(--sky-1);
+  background-image:
+    radial-gradient(ellipse 60% 25% at 20% 18%, rgba(255, 255, 255, .10), transparent 70%),
+    radial-gradient(ellipse 50% 20% at 85% 40%, rgba(242, 140, 40, .16), transparent 70%),
+    radial-gradient(ellipse 70% 30% at 40% 75%, rgba(255, 209, 102, .18), transparent 70%),
+    linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 42%, var(--sky-3) 80%, var(--sky-4) 100%);
+  background-attachment: fixed;
+}
+[data-theme="lantern"] .view, [data-theme="lantern"] .tabs { position: relative; z-index: 1; }
+[data-theme="lantern"] .tabs { position: fixed; }
+[data-theme="lantern"] .view h1 { background: var(--paper); transform: none; border-radius: 10px; box-shadow: 0 4px 12px var(--shadow); }
+[data-theme="lantern"] .view > section > p.muted, [data-theme="lantern"] .hello p { background: var(--paper); border-radius: 8px; }
+
+/* Paper with watercolour bleed at the edges; no tape, no tilt. */
+[data-theme="lantern"] .card, [data-theme="lantern"] .card:nth-of-type(n) {
+  background:
+    radial-gradient(ellipse 70% 40% at 0% 0%, var(--paper-edge), transparent 70%),
+    radial-gradient(ellipse 60% 45% at 100% 100%, var(--paper-blue), transparent 70%),
+    var(--paper);
+  transform: none; border-radius: 14px; padding-top: 14px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset, 0 10px 22px -10px var(--shadow);
+}
+[data-theme="lantern"] .card::before { display: none; }
+[data-theme="lantern"] .card.flash { background: var(--paper); background-image: none; }
+[data-theme="lantern"] .text { background-image: repeating-linear-gradient(180deg, transparent 0 43px, var(--rule) 43px 44px); }
+[data-theme="lantern"] .card.pop { background: #fff6df; transform: none; box-shadow: 0 0 0 2px rgba(242, 140, 40, .35), 0 10px 22px -8px var(--shadow); }
+[data-theme="lantern"] .warn-soft { background: rgba(242, 140, 40, .14); }
+[data-theme="lantern"] .btn { background: rgba(255, 255, 255, .7); border-color: rgba(43, 67, 112, .2); color: var(--ink); }
+[data-theme="lantern"] .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 0 12px rgba(242, 140, 40, .45); }
+[data-theme="lantern"] .review > .btn.ghost, [data-theme="lantern"] section > .btn.ghost { background: var(--paper); color: var(--ink); border-radius: 8px; }
+[data-theme="lantern"] textarea, [data-theme="lantern"] input[type=text], [data-theme="lantern"] input[type=password],
+[data-theme="lantern"] input[type=number], [data-theme="lantern"] input[type=date], [data-theme="lantern"] select {
+  background: rgba(255, 255, 255, .75); color: var(--ink); border-color: rgba(43, 67, 112, .2);
+}
+/* Tab bar: an evening sky strip with a warm lantern glow on the current tab. */
+[data-theme="lantern"] .tabs { background: #1d2b4a; background-image: none; box-shadow: 0 -6px 16px rgba(0, 0, 0, .3); }
+[data-theme="lantern"] .tab { color: #f3e6cf; }
+[data-theme="lantern"] .tab.on { background: rgba(242, 140, 40, .22); color: #ffd7a8; }
+
+/* Bé Mầm waiting in the empty stamp ring. */
+[data-theme="lantern"] .stamp-empty.sprout-wait { display: flex; align-items: center; justify-content: center; opacity: .55; border-color: rgba(200, 69, 42, .35); }
+
+/* Drifting decorations: lanterns bob, leaves float across the top. Behind the paper, never on text. */
+.deco { display: none; }
+[data-theme="lantern"] .deco { display: block; position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.deco svg { position: absolute; }
+.deco .l1 { right: 14px; top: 4px; width: 26px; animation: bob 8s ease-in-out infinite; }
+.deco .l2 { right: 52px; top: 22px; width: 18px; animation: bob 9.5s ease-in-out infinite -3s; }
+.deco .l3 { right: 2px; top: 52px; width: 15px; animation: bob 7s ease-in-out infinite -5s; }
+.deco .f1 { left: -20px; top: 70px; width: 16px; animation: drift 22s linear infinite; }
+.deco .f2 { left: -20px; top: 140px; width: 12px; animation: drift 27s linear infinite -11s; }
+@keyframes bob { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(6px) rotate(3deg); } }
+@keyframes drift {
+  0% { transform: translate(0, 0) rotate(0); opacity: 0; } 8% { opacity: .75; }
+  50% { transform: translate(55vw, 40px) rotate(160deg); } 92% { opacity: .75; }
+  100% { transform: translate(110vw, 10px) rotate(320deg); opacity: 0; }
+}
+/* Less motion: the decorations stand still. */
+@media (prefers-reduced-motion: reduce) { .deco svg { animation: none !important; } .deco .f1, .deco .f2 { display: none; } }
+/* Any heading or line that sits straight on the sky gets a small cream paper label, so it stays readable. */
+[data-theme="lantern"] .view > section > :is(h2, p, div):not(.card):not(.week):not(.row) {
+  background: var(--paper); color: var(--ink); border-radius: 8px; padding: 4px 10px; width: fit-content; max-width: 100%;
+}
+[data-theme="lantern"] .view > section > h2 { margin-top: 14px; }
+.tok.plain { border-bottom: 0; }
+.dict-sense + .dict-sense { border-top: 1px dashed rgba(80, 60, 40, .25); margin-top: 6px; padding-top: 4px; }
+.dict-ai { margin-top: 8px; }
+.sent-list { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; }
+.sent-btn { font: inherit; font-size: 1.1rem; text-align: left; padding: 8px 10px; min-height: 44px; border-radius: 10px; border: 1px solid rgba(80, 60, 40, .2); background: rgba(255, 255, 255, .6); color: var(--ink); cursor: pointer; }
+.sent-btn.on { outline: 3px solid var(--accent); }
