@@ -109,3 +109,7 @@ legend { display: flex; align-items: center; font-weight: 700; padding: 0 4px; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 .src p { margin: 2px 0; }
 a { color: var(--ja); }
+.news-btn { min-height: 44px; border: 0; border-bottom: 1px solid var(--line); background: none; padding: 6px 0; }
+.video iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 12px; background: var(--line); }
+.src-line { border-left: 3px solid var(--ja); padding-left: 8px; margin: 6px 0 10px; }
+.src-line a { word-break: break-word; }

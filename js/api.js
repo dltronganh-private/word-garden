@@ -14,12 +14,13 @@ export class ClaudeError extends Error {
 }
 
 /** Builds the request body. Sampling parameters are not sent: this API version rejects them. */
-export function buildBody({ model, system, user, schema, effort = "medium", maxTokens = 16000 }) {
+export function buildBody({ model, system, user, messages, schema, tools, effort = "medium", maxTokens = 16000 }) {
   const body = {
     model, max_tokens: maxTokens, system,
-    messages: [{ role: "user", content: user }],
-    output_config: { effort, format: { type: "json_schema", schema } },
+    messages: messages || [{ role: "user", content: user }],
+    output_config: schema ? { effort, format: { type: "json_schema", schema } } : { effort },
   };
+  if (tools) body.tools = tools;
   // Server-side fallback when a safety classifier declines (supported on Opus 5.5 / Sonnet 5.5).
   if (MODELS[model] && MODELS[model].fallback) body.fallbacks = "default";
   return body;
@@ -73,13 +74,19 @@ export async function callClaude(opts, fetchImpl = fetch) {
   let data = null;
   try { data = await res.json(); } catch (e) { data = null; }
   if (!res.ok) throw new ClaudeError(classifyError(res.status, data), (data && data.error && data.error.message) || "error", res.status);
+  // `raw`: the caller reads the content blocks itself (tool use, citations).
+  if (opts.raw) return { data, usage: data.usage || {}, model: data.model };
   return { json: parseResponse(data), usage: data.usage || {}, model: data.model };
 }
 
-/** Cost in USD of one usage record (thinking is billed as output). */
+/** Web search is billed per search on top of tokens: 10 USD per 1,000 searches. */
+export const WEB_SEARCH_USD = 0.01;
+
+/** Cost in USD of one usage record (thinking is billed as output; web searches counted when present). */
 export function costUsd(model, usage) {
   const m = MODELS[model] || MODELS["claude-opus-5-5"];
-  return ((usage.input_tokens || 0) * m.inUsd + (usage.output_tokens || 0) * m.outUsd) / 1e6;
+  const searches = (usage.server_tool_use && usage.server_tool_use.web_search_requests) || 0;
+  return ((usage.input_tokens || 0) * m.inUsd + (usage.output_tokens || 0) * m.outUsd) / 1e6 + searches * WEB_SEARCH_USD;
 }
 
 export const ERROR_TEXT = {
@@ -95,4 +102,6 @@ export const ERROR_TEXT = {
   truncated: "Câu trả lời bị cắt giữa chừng. Thử lại với bài ngắn hơn.",
   bad_json: "Câu trả lời không đúng khuôn. Thử lại.",
   bad_request: "Yêu cầu bị từ chối. Thử lại; nếu lặp lại thì báo cho người làm app.",
+  no_results: "AI không tìm được tin nào hôm nay. Thử lại sau.",
+  bad_url: "Link không hợp lệ (phải bắt đầu bằng https://).",
 };

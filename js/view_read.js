@@ -7,6 +7,7 @@ import { addWord, isRemembered, isSeen } from "./cards.js";
 import { addCustom, hanvietFor } from "./words.js";
 import { getFeedback, LEVEL_VI } from "./feedback.js";
 import { ERROR_TEXT, costUsd } from "./api.js";
+import { newsSection, pasteSection, findText, sourceLine } from "./view_news.js";
 
 const knowsFn = (st, lang) => (t) => {
   const id = t.kind === "pack" ? t.word.id : `${lang}:${t.lemma}`;
@@ -14,12 +15,14 @@ const knowsFn = (st, lang) => (t) => {
 };
 
 export function viewRead(ctx) {
-  return ctx.arg ? readText(ctx, ctx.texts.find((t) => t.id === ctx.arg)) : textList(ctx);
+  const t = ctx.arg ? findText(ctx, ctx.arg) : null;
+  return t ? readText(ctx, t) : textList(ctx);
 }
 
 function textList(ctx) {
   const out = h("section", {}, h("h1", { text: "Đọc" }),
-    h("p", { class: "muted", text: "Bài ngắn theo vốn từ. Bấm vào từ có gạch chân để xem nghĩa và thêm vào thẻ." }));
+    h("p", { class: "muted", text: "Bài ngắn theo vốn từ. Bấm vào từ có gạch chân để xem nghĩa và thêm vào thẻ." }),
+    newsSection(ctx), pasteSection(ctx), h("h2", { text: "Bài có sẵn" }));
   for (const l of LANGS) {
     if (!ctx.st.settings.langs[l].on) continue;
     out.append(h("h2", {}, h("span", { class: "lang-dot " + l }), LANG_VI[l]));
@@ -40,7 +43,7 @@ function readText(ctx, text) {
   const tokens = parseText(text, ctx.packs[lang]);
   const out = h("section", { class: "reader" });
   out.append(h("button", { class: "btn ghost", onclick: () => ctx.go("read"), text: "← Danh sách bài" }),
-    h("h1", { text: text.title }),
+    h("h1", { text: text.title }), sourceLine(text) || "",
     h("p", { class: "muted small", text: `Bạn biết khoảng ${pct(coverage(tokens, knowsFn(st, lang)))} số từ trong bài (cần khoảng 95 % để đọc thoải mái).` }));
 
   const pop = h("div", { class: "card pop", hidden: true, "aria-live": "polite" });

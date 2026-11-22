@@ -30,7 +30,7 @@ export function defaultSettings() {
 
 export function fresh(now = new Date()) {
   return { version: 1, created: now.toISOString(), settings: defaultSettings(),
-    cards: {}, known: {}, custom: {}, notes: {}, log: [], days: {}, writings: [], forecasts: [], warnedWeek: "" };
+    cards: {}, known: {}, custom: {}, notes: {}, log: [], days: {}, writings: [], forecasts: [], warnedWeek: "", news: {}, pasted: [] };
 }
 
 /** Fills fields added after a state was saved, so old saves keep loading. */

@@ -66,6 +66,8 @@ export function viewSettings(ctx) {
       h("button", { class: "btn", text: "Nhập bản sao lưu", onclick: () => file.click() })), file));
 
   out.append(h("button", { class: "card row-btn", onclick: () => ctx.go("sources") }, h("span", { text: "Nguồn dữ liệu và giấy phép" }), h("span", { text: "›" })));
+  // The test set is a tool for whoever runs the app locally, not for the public page.
+  if (["localhost", "127.0.0.1"].includes(location.hostname)) out.append(h("button", { class: "card row-btn", onclick: () => ctx.go("eval") }, h("span", { text: "Bộ kiểm góp ý AI (người làm app)" }), h("span", { text: "›" })));
   return out;
 }
 
