@@ -116,3 +116,116 @@ a { color: var(--ja); }
 .ask { background: var(--warn); border: 1px solid var(--warn-line); border-radius: 12px; padding: 8px 12px; margin: 8px 0; }
 .result-json { white-space: pre-wrap; word-break: break-all; font-size: .7rem; max-height: 240px; overflow: auto; background: var(--bg); border-radius: 8px; padding: 6px; }
 .result-json:empty { display: none; }
+
+/* ===== Study-desk theme: light wood desk, pastel sticky notes with tape, an index card for flashcards,
+   ruled notebook paper for reading, a ruler for the tab bar. Mood: calm and warm (high-key, soft shapes).
+   Text sits on paper, never straight on the wood grain, so contrast stays readable. ===== */
+:root {
+  --wood: #dfc29b; --wood-2: #d4b48a; --wood-line: rgba(120, 80, 40, .10);
+  --muted: #554c5c;
+  --note-1: #fff3a8; --note-2: #ffd9df; --note-3: #d6f2df; --note-4: #d8e8fb; --paper: #fffdf6;
+  --tape: rgba(255, 255, 255, .55); --tape-edge: rgba(150, 120, 80, .18);
+  --rule: #c9dcef; --margin-red: #f0a6a6; --shadow: rgba(80, 50, 20, .22);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --wood: #3a2b20; --wood-2: #33251b; --wood-line: rgba(0, 0, 0, .18);
+    --muted: #c9c0cf;
+    --note-1: #4a4530; --note-2: #4a3539; --note-3: #2f4537; --note-4: #2f3d50; --paper: #2c2a2f;
+    --tape: rgba(255, 255, 255, .14); --tape-edge: rgba(0, 0, 0, .2);
+    --rule: #3b4a5c; --margin-red: #7a3e3e; --shadow: rgba(0, 0, 0, .45);
+  }
+}
+html { background: var(--wood); }
+body {
+  background-color: var(--wood);
+  /* wood grain: soft stripes, no image file */
+  background-image:
+    repeating-linear-gradient(92deg, var(--wood-line) 0 2px, transparent 2px 23px),
+    repeating-linear-gradient(88deg, transparent 0 41px, var(--wood-line) 41px 43px),
+    linear-gradient(180deg, var(--wood) 0%, var(--wood-2) 100%);
+  overflow-x: hidden;
+}
+/* Page titles: a strip of washi tape stuck on the desk. */
+.view h1 {
+  display: inline-block; padding: 4px 14px 4px 12px; background: var(--note-4);
+  transform: rotate(-1deg); box-shadow: 0 2px 4px var(--shadow); border-radius: 2px;
+}
+.view > section > p.muted, .hello p { background: var(--paper); display: inline-block; padding: 2px 8px; border-radius: 2px; }
+
+/* Cards become sticky notes: square-ish paper, pastel colours in turn, a piece of tape on top, a lifted shadow. */
+.card {
+  position: relative; border: 0; border-radius: 2px 2px 6px 2px; background: var(--note-1);
+  box-shadow: 0 1px 1px var(--shadow), 0 8px 14px -8px var(--shadow);
+  padding-top: 18px;
+}
+.card:nth-of-type(4n+2) { background: var(--note-2); transform: rotate(.5deg); }
+.card:nth-of-type(4n+3) { background: var(--note-3); transform: rotate(-.4deg); }
+.card:nth-of-type(4n) { background: var(--note-4); transform: rotate(.3deg); }
+.card:nth-of-type(4n+1) { transform: rotate(-.5deg); }
+.card::before {
+  content: ""; position: absolute; top: -9px; left: 50%; width: 76px; height: 20px; margin-left: -38px;
+  background: var(--tape); border-left: 1px dashed var(--tape-edge); border-right: 1px dashed var(--tape-edge);
+  transform: rotate(-2deg); pointer-events: none;
+}
+.card.row-btn { min-height: 56px; }
+.warn-soft { background: var(--note-2); border: 0; border-radius: 2px; box-shadow: 0 6px 12px -8px var(--shadow); }
+.warn-soft.inner { background: rgba(255, 255, 255, .45); }
+.warn { background: var(--note-2); }
+
+/* Flashcard: a white index card with blue rules and a red margin line. */
+.card.flash {
+  background-color: var(--paper); transform: none;
+  background-image:
+    linear-gradient(90deg, transparent 0 28px, var(--margin-red) 28px 30px, transparent 30px),
+    repeating-linear-gradient(180deg, transparent 0 31px, var(--rule) 31px 32px);
+  background-position: 0 0, 0 46px;
+  border-radius: 4px;
+}
+.card.flash::before { display: none; }
+
+/* Reading text: ruled notebook paper, lines in step with the text. */
+.reader .card:has(.text) { background-color: var(--paper); transform: none; }
+.text {
+  line-height: 44px; font-size: 1.35rem;
+  background-image: repeating-linear-gradient(180deg, transparent 0 43px, var(--rule) 43px 44px);
+}
+/* The word pop-up: a yellow sticky note held by tape. */
+.pop { background: var(--note-1); transform: rotate(-.6deg); }
+
+/* Inputs: lighter paper inside the notes. */
+textarea, input[type=text], input[type=password], input[type=number], input[type=date], select {
+  background: rgba(255, 255, 255, .7); border-color: rgba(80, 50, 20, .18);
+}
+@media (prefers-color-scheme: dark) {
+  textarea, input[type=text], input[type=password], input[type=number], input[type=date], select { background: rgba(0, 0, 0, .25); }
+}
+.btn { border-color: rgba(80, 50, 20, .18); background: rgba(255, 255, 255, .75); }
+@media (prefers-color-scheme: dark) { .btn { background: rgba(0, 0, 0, .25); } }
+.btn.primary { box-shadow: 0 2px 0 rgba(80, 50, 20, .25); }
+.btn.ghost { background: transparent; }
+.edit { background: rgba(255, 255, 255, .55); border: 0; border-radius: 2px; }
+.day.today { background: rgba(255, 255, 255, .6); }
+.result-json { background: rgba(255, 255, 255, .6); }
+
+/* Tab bar: a wooden ruler along the bottom edge. */
+.tabs {
+  background-color: #f6e7b8; border-top: 0; box-shadow: 0 -4px 10px var(--shadow);
+  background-image: repeating-linear-gradient(90deg, rgba(90, 60, 20, .45) 0 1px, transparent 1px 10px),
+    repeating-linear-gradient(90deg, rgba(90, 60, 20, .6) 0 1px, transparent 1px 50px);
+  background-size: 100% 7px, 100% 12px; background-repeat: repeat-x; background-position: 0 0, 0 0;
+}
+@media (prefers-color-scheme: dark) { .tabs { background-color: #5a4a30; } }
+.tab { color: #4a3a22; padding-top: 10px; }
+@media (prefers-color-scheme: dark) { .tab { color: #f3e6c8; } }
+.tab.on { background: rgba(255, 255, 255, .55); color: #b8423c; }
+@media (prefers-color-scheme: dark) { .tab.on { background: rgba(0, 0, 0, .25); color: #ffb3ad; } }
+
+/* People who ask for less motion get flat, untilted notes. */
+@media (prefers-reduced-motion: reduce) { .card, .pop, .view h1 { transform: none !important; } }
+.btn.grade.g1 { background: var(--g1); } .btn.grade.g2 { background: var(--g2); }
+.btn.grade.g3 { background: var(--g3); } .btn.grade.g4 { background: var(--g4); }
+/* Text buttons that lie on the wood get a small paper label so they stay readable. */
+.review > .btn.ghost, section > .btn.ghost { background: rgba(255, 253, 246, .8); border-radius: 2px; padding: 4px 10px; min-height: 36px; }
+@media (prefers-color-scheme: dark) { .review > .btn.ghost, section > .btn.ghost { background: rgba(0, 0, 0, .35); } }
+.card.pop { background: var(--note-1); transform: rotate(-.6deg); }
