@@ -5,6 +5,7 @@ import { todayPlan, forecasts } from "./progress.js";
 import { minutesOn } from "./planner.js";
 import { stampSVG, streak } from "./stamp.js";
 import { newCards } from "./cards.js";
+import { sproutStage, sproutName, sproutSVG, sproutStampSVG, SPROUT_STAGES } from "./sprout.js";
 
 export function viewToday(ctx) {
   const { st } = ctx;
@@ -21,11 +22,19 @@ export function viewToday(ctx) {
     h("p", { class: "muted", text: mins ? `Hôm nay có ${mins} phút học, khoảng ${Math.round(p.plan.cardMinutes)} phút cho thẻ.` : "Hôm nay là ngày nghỉ. Nghỉ cũng không mất chuỗi." })));
 
   const stampBox = h("div", { class: "card stamp-box" });
+  const lantern = st.settings.theme === "lantern";
+  // Bé Mầm grows with every remembered word (all three languages together).
+  const remembered = Object.values(p.counts).reduce((a, c) => a + c.remembered, 0);
+  const stage = sproutStage(remembered);
   if (day.stamp) {
-    stampBox.append(svg(stampSVG(-8, 132)), h("p", { class: "big", text: "Xong bài hôm nay rồi!" }));
+    stampBox.append(svg(lantern ? sproutStampSVG(stage, -6, 132) : stampSVG(-8, 132)), h("p", { class: "big", text: "Xong bài hôm nay rồi!" }));
   } else {
-    stampBox.append(h("div", { class: "stamp-empty", "aria-hidden": "true" }),
+    stampBox.append(lantern ? h("div", { class: "stamp-empty sprout-wait" }, svg(sproutSVG(stage, 96, "wait"))) : h("div", { class: "stamp-empty", "aria-hidden": "true" }),
       h("p", { text: "Ôn xong các thẻ đến hạn để nhận con dấu hôm nay." }));
+  }
+  if (lantern) {
+    const next = SPROUT_STAGES[stage];
+    stampBox.append(h("p", { class: "small", text: `Bé Mầm: ${sproutName(stage)}` + (next ? ` · còn ${next.min - remembered} từ nữa là ${next.name.toLowerCase()}` : " · đã lớn hết cỡ") }));
   }
   const s = streak(st, st.settings, now);
   stampBox.append(h("p", { class: "muted", text: s ? `Chuỗi: ${s} buổi học liền.` : "Chưa có chuỗi. Bắt đầu từ hôm nay nhé." }));

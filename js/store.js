@@ -24,6 +24,7 @@ export function defaultSettings() {
     priority: ["zh", "ja", "ko"],
     model: DEFAULT_MODEL,
     showHanviet: true,
+    theme: "desk", // "desk" (study desk) or "lantern" (lantern garden)
     showWeakEdits: false,
   };
 }

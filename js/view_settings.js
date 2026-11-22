@@ -9,6 +9,12 @@ export function viewSettings(ctx) {
   const s = st.settings;
   const out = h("section", { class: "settings" }, h("h1", { text: "Cài đặt" }));
 
+  out.append(h("div", { class: "card" }, h("h2", { text: "Giao diện" }),
+    h("div", { class: "row theme-pick", role: "radiogroup", "aria-label": "Chọn giao diện" },
+      [["desk", "Bàn học"], ["lantern", "Vườn đèn lồng"]].map(([id, label]) => h("button", {
+        class: "btn" + (s.theme === id ? " primary" : ""), role: "radio", "aria-checked": s.theme === id ? "true" : "false",
+        text: label, onclick: () => { s.theme = id; ctx.save(); ctx.render(); } })))));
+
   // API key: typed by the learner, kept only in this browser, never exported.
   const has = !!store.getKey();
   const keyIn = h("input", { type: "password", autocomplete: "off", spellcheck: "false", placeholder: has ? "Đã có khoá (ẩn)" : "Dán khoá API vào đây", "aria-label": "Khoá API" });

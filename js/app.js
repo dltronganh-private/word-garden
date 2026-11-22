@@ -3,7 +3,8 @@ import { makeStore } from "./store.js";
 import { initScheduler } from "./cards.js";
 import { loadPacks } from "./words.js";
 import { counts, snapshot } from "./progress.js";
-import { h } from "./ui.js";
+import { h, svg } from "./ui.js";
+import { lanternDecoSVG } from "./sprout.js";
 import { viewToday } from "./view_today.js";
 import { viewReview } from "./view_review.js";
 import { viewRead } from "./view_read.js";
@@ -48,7 +49,10 @@ async function main() {
       TABS.map(([id, label]) => h("button", {
         class: "tab" + (ctx.view === id || (id === "settings" && (ctx.view === "sources" || ctx.view === "eval" || ctx.view === "translate")) ? " on" : ""),
         "aria-current": ctx.view === id ? "page" : null, onclick: () => ctx.go(id), text: label })));
-    root.replaceChildren(body, nav);
+    // The theme lives on <html> so the stylesheet can switch everything at once; the lantern theme adds drifting decorations.
+    const theme = st.settings.theme === "lantern" ? "lantern" : "desk";
+    document.documentElement.dataset.theme = theme;
+    if (theme === "lantern") root.replaceChildren(svg(lanternDecoSVG()), body, nav); else root.replaceChildren(body, nav);
   }
   ctx.render = render;
   render();

@@ -229,3 +229,89 @@ textarea, input[type=text], input[type=password], input[type=number], input[type
 .review > .btn.ghost, section > .btn.ghost { background: rgba(255, 253, 246, .8); border-radius: 2px; padding: 4px 10px; min-height: 36px; }
 @media (prefers-color-scheme: dark) { .review > .btn.ghost, section > .btn.ghost { background: rgba(0, 0, 0, .35); } }
 .card.pop { background: var(--note-1); transform: rotate(-.6deg); }
+
+/* ===== Lantern garden theme (html[data-theme="lantern"]): a dusk garden. Deep blue sky fading to a warm horizon,
+   soft watercolour blots, cream paper for every block of text, small paper lanterns drifting in the top corner.
+   Text always sits on cream paper; decorations stay behind the paper and in the margins. ===== */
+[data-theme="lantern"] {
+  --sky-1: #2b4370; --sky-2: #56689a; --sky-3: #d08a6c; --sky-4: #f4cf96;
+  --paper: #fbf3e4; --paper-edge: rgba(228, 87, 46, .10); --paper-blue: rgba(74, 93, 138, .10);
+  --ink: #2d2a32; --muted: #5a5060; --stamp: #c8452a; --accent: #c4442a;
+  --note-1: #fbf3e4; --note-2: #fbf3e4; --note-3: #fbf3e4; --note-4: #fbf3e4;
+  --rule: rgba(74, 93, 138, .2); --shadow: rgba(18, 24, 48, .35);
+}
+@media (prefers-color-scheme: dark) {
+  [data-theme="lantern"] {
+    --sky-1: #121c33; --sky-2: #243560; --sky-3: #6a4a63; --sky-4: #b5785a;
+    --paper: #f3e6cf; --ink: #2d2a32; --muted: #574c58; --shadow: rgba(0, 0, 0, .55);
+  }
+  /* Paper stays light at night, so text inside it keeps the light-mode colours. */
+  [data-theme="lantern"] .card, [data-theme="lantern"] .card * { color: var(--ink); }
+  [data-theme="lantern"] .card .muted, [data-theme="lantern"] .card .small { color: var(--muted); }
+}
+html[data-theme="lantern"] { background: var(--sky-1); }
+[data-theme="lantern"] body {
+  background-color: var(--sky-1);
+  background-image:
+    radial-gradient(ellipse 60% 25% at 20% 18%, rgba(255, 255, 255, .10), transparent 70%),
+    radial-gradient(ellipse 50% 20% at 85% 40%, rgba(242, 140, 40, .16), transparent 70%),
+    radial-gradient(ellipse 70% 30% at 40% 75%, rgba(255, 209, 102, .18), transparent 70%),
+    linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 42%, var(--sky-3) 80%, var(--sky-4) 100%);
+  background-attachment: fixed;
+}
+[data-theme="lantern"] .view, [data-theme="lantern"] .tabs { position: relative; z-index: 1; }
+[data-theme="lantern"] .tabs { position: fixed; }
+[data-theme="lantern"] .view h1 { background: var(--paper); transform: none; border-radius: 10px; box-shadow: 0 4px 12px var(--shadow); }
+[data-theme="lantern"] .view > section > p.muted, [data-theme="lantern"] .hello p { background: var(--paper); border-radius: 8px; }
+
+/* Paper with watercolour bleed at the edges; no tape, no tilt. */
+[data-theme="lantern"] .card, [data-theme="lantern"] .card:nth-of-type(n) {
+  background:
+    radial-gradient(ellipse 70% 40% at 0% 0%, var(--paper-edge), transparent 70%),
+    radial-gradient(ellipse 60% 45% at 100% 100%, var(--paper-blue), transparent 70%),
+    var(--paper);
+  transform: none; border-radius: 14px; padding-top: 14px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset, 0 10px 22px -10px var(--shadow);
+}
+[data-theme="lantern"] .card::before { display: none; }
+[data-theme="lantern"] .card.flash { background: var(--paper); background-image: none; }
+[data-theme="lantern"] .text { background-image: repeating-linear-gradient(180deg, transparent 0 43px, var(--rule) 43px 44px); }
+[data-theme="lantern"] .card.pop { background: #fff6df; transform: none; box-shadow: 0 0 0 2px rgba(242, 140, 40, .35), 0 10px 22px -8px var(--shadow); }
+[data-theme="lantern"] .warn-soft { background: rgba(242, 140, 40, .14); }
+[data-theme="lantern"] .btn { background: rgba(255, 255, 255, .7); border-color: rgba(43, 67, 112, .2); color: var(--ink); }
+[data-theme="lantern"] .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 0 12px rgba(242, 140, 40, .45); }
+[data-theme="lantern"] .review > .btn.ghost, [data-theme="lantern"] section > .btn.ghost { background: var(--paper); color: var(--ink); border-radius: 8px; }
+[data-theme="lantern"] textarea, [data-theme="lantern"] input[type=text], [data-theme="lantern"] input[type=password],
+[data-theme="lantern"] input[type=number], [data-theme="lantern"] input[type=date], [data-theme="lantern"] select {
+  background: rgba(255, 255, 255, .75); color: var(--ink); border-color: rgba(43, 67, 112, .2);
+}
+/* Tab bar: an evening sky strip with a warm lantern glow on the current tab. */
+[data-theme="lantern"] .tabs { background: #1d2b4a; background-image: none; box-shadow: 0 -6px 16px rgba(0, 0, 0, .3); }
+[data-theme="lantern"] .tab { color: #f3e6cf; }
+[data-theme="lantern"] .tab.on { background: rgba(242, 140, 40, .22); color: #ffd7a8; }
+
+/* Bé Mầm waiting in the empty stamp ring. */
+[data-theme="lantern"] .stamp-empty.sprout-wait { display: flex; align-items: center; justify-content: center; opacity: .55; border-color: rgba(200, 69, 42, .35); }
+
+/* Drifting decorations: lanterns bob, leaves float across the top. Behind the paper, never on text. */
+.deco { display: none; }
+[data-theme="lantern"] .deco { display: block; position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.deco svg { position: absolute; }
+.deco .l1 { right: 14px; top: 4px; width: 26px; animation: bob 8s ease-in-out infinite; }
+.deco .l2 { right: 52px; top: 22px; width: 18px; animation: bob 9.5s ease-in-out infinite -3s; }
+.deco .l3 { right: 2px; top: 52px; width: 15px; animation: bob 7s ease-in-out infinite -5s; }
+.deco .f1 { left: -20px; top: 70px; width: 16px; animation: drift 22s linear infinite; }
+.deco .f2 { left: -20px; top: 140px; width: 12px; animation: drift 27s linear infinite -11s; }
+@keyframes bob { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(6px) rotate(3deg); } }
+@keyframes drift {
+  0% { transform: translate(0, 0) rotate(0); opacity: 0; } 8% { opacity: .75; }
+  50% { transform: translate(55vw, 40px) rotate(160deg); } 92% { opacity: .75; }
+  100% { transform: translate(110vw, 10px) rotate(320deg); opacity: 0; }
+}
+/* Less motion: the decorations stand still. */
+@media (prefers-reduced-motion: reduce) { .deco svg { animation: none !important; } .deco .f1, .deco .f2 { display: none; } }
+/* Any heading or line that sits straight on the sky gets a small cream paper label, so it stays readable. */
+[data-theme="lantern"] .view > section > :is(h2, p, div):not(.card):not(.week):not(.row) {
+  background: var(--paper); color: var(--ink); border-radius: 8px; padding: 4px 10px; width: fit-content; max-width: 100%;
+}
+[data-theme="lantern"] .view > section > h2 { margin-top: 14px; }
