@@ -4,7 +4,7 @@ import { h, pct } from "./ui.js";
 import { LANGS, LANG_TAG, LANG_VI } from "./store.js";
 import { parseText, coverage, plainText } from "./reader.js";
 import { addWord, isRemembered, isSeen } from "./cards.js";
-import { addCustom, hanvietFor } from "./words.js";
+import { addCustom, hanvietFor, aiMeaningRow } from "./words.js";
 import { getFeedback, LEVEL_VI } from "./feedback.js";
 import { ERROR_TEXT, costUsd } from "./api.js";
 import { newsSection, pasteSection, findText, sourceLine } from "./view_news.js";
@@ -71,6 +71,7 @@ function showWord(ctx, pop, lang, t) {
     h("p", { class: "head small-head", lang: LANG_TAG[lang], text: head }),
     h("p", { class: "reading", lang: LANG_TAG[lang], text: reading || "" }),
     h("p", { class: "meaning", text: meaning || "" }),
+    t.kind === "pack" ? aiMeaningRow(t.word, st, ctx.save, h) : null,
     extra ? h("p", { class: "muted small", text: extra }) : null,
     h("button", { class: "btn" + (added ? "" : " primary"), disabled: added, text: added ? "Đã có trong thẻ" : "Thêm vào thẻ", onclick: () => {
       const wid = t.kind === "pack" ? id : addCustom(st, lang, head, reading, meaning);

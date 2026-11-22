@@ -19,3 +19,15 @@ export function svg(markup) { const t = document.createElement("template"); t.in
 export const fmtDate = (d) => d ? d.toLocaleDateString("vi-VN", { day: "numeric", month: "numeric", year: "numeric" }) : "—";
 export const pct = (x) => `${Math.round(x * 100)} %`;
 export const WEEKDAY_VI = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
+
+/**
+ * Asks for a confirmation inside the page (no native dialog: embedded browsers suppress them).
+ * Fills `slot` with the question and two buttons; `onYes` runs after the yes button.
+ */
+export function askInline(slot, text, yesText, onYes) {
+  const clear = () => slot.replaceChildren();
+  slot.replaceChildren(h("div", { class: "ask", role: "alert" }, h("p", { text }),
+    h("div", { class: "row" },
+      h("button", { class: "btn primary", text: yesText, onclick: () => { clear(); onYes(); } }),
+      h("button", { class: "btn", text: "Thôi", onclick: clear }))));
+}

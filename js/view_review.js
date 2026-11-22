@@ -3,7 +3,7 @@ import { h, svg } from "./ui.js";
 import { LANG_TAG, LANG_VI } from "./store.js";
 import { addWord, grade, newCards, todayQueue, previewLabels, markKnown, langOf, applyEasyDays } from "./cards.js";
 import { minutesOn } from "./planner.js";
-import { nextNewWords, wordById, hanvietFor } from "./words.js";
+import { nextNewWords, wordById, hanvietFor, aiMeaningRow } from "./words.js";
 import { todayPlan } from "./progress.js";
 import { checkStamp, stampSVG } from "./stamp.js";
 
@@ -59,6 +59,7 @@ export function viewReview(ctx) {
   if (word.meaningVi && word.meaningEn) back.append(h("p", { class: "muted small", text: `Anh: ${word.meaningEn}` }));
   if (!word.meaningVi && word.meaningEn) back.append(h("p", { class: "muted small", text: "Chưa có nghĩa tiếng Việt cho gói này; đang hiện nghĩa tiếng Anh." }));
   if (lang === "zh" && word.trad && word.trad !== word.head) back.append(h("p", { class: "muted small", lang: "zh-Hant", text: `Phồn thể: ${word.trad}` }));
+  const aiRow = aiMeaningRow(word, st, ctx.save, h); if (aiRow) back.append(aiRow);
   back.append(hanvietRow(ctx, word));
   face.append(back);
 

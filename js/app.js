@@ -10,8 +10,9 @@ import { viewRead } from "./view_read.js";
 import { viewWeek } from "./view_week.js";
 import { viewSettings, viewSources } from "./view_settings.js";
 import { viewEval } from "./view_eval.js";
+import { viewTranslate } from "./view_translate.js";
 
-const VIEWS = { today: viewToday, review: viewReview, read: viewRead, week: viewWeek, settings: viewSettings, sources: viewSources, eval: viewEval };
+const VIEWS = { today: viewToday, review: viewReview, read: viewRead, week: viewWeek, settings: viewSettings, sources: viewSources, eval: viewEval, translate: viewTranslate };
 const TABS = [["today", "Hôm nay"], ["review", "Ôn thẻ"], ["read", "Đọc"], ["week", "Lịch"], ["settings", "Cài đặt"]];
 
 const getJSON = async (url) => { const r = await fetch(url); if (!r.ok) throw new Error(url); return r.json(); };
@@ -45,7 +46,7 @@ async function main() {
     body.append(VIEWS[ctx.view](ctx));
     const nav = h("nav", { class: "tabs", "aria-label": "Mục chính" },
       TABS.map(([id, label]) => h("button", {
-        class: "tab" + (ctx.view === id || (id === "settings" && (ctx.view === "sources" || ctx.view === "eval")) ? " on" : ""),
+        class: "tab" + (ctx.view === id || (id === "settings" && (ctx.view === "sources" || ctx.view === "eval" || ctx.view === "translate")) ? " on" : ""),
         "aria-current": ctx.view === id ? "page" : null, onclick: () => ctx.go(id), text: label })));
     root.replaceChildren(body, nav);
   }

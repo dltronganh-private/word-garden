@@ -1,7 +1,7 @@
 // "Bộ kiểm góp ý": runs the feedback on the test set with the key in this browser, grades by machine,
 // shows three numbers per language and offers the results as a file. Every run costs money: the estimate
 // is shown and confirmed first.
-import { h, pct } from "./ui.js";
+import { h, pct, askInline } from "./ui.js";
 import { LANG_VI, LANG_TAG } from "./store.js";
 import { MODELS, DEFAULT_MODEL, ERROR_TEXT, costUsd } from "./api.js";
 import { getFeedback } from "./feedback.js";
@@ -33,12 +33,16 @@ function setup(ctx, box, set) {
   const runBtn = h("button", { class: "btn primary", text: "Chạy" });
   const stopBtn = h("button", { class: "btn", text: "Dừng", hidden: true, onclick: () => { stop = true; } });
   const dl = h("button", { class: "btn", text: "Tải kết quả", disabled: true, onclick: () => download(last) });
-  runBtn.addEventListener("click", async () => {
+  const askSlot = h("div", {});
+  const resultText = h("pre", { class: "result-json", "aria-label": "Kết quả dạng chữ" });
+  runBtn.addEventListener("click", () => {
     if (running) return;
     const key = store.getKey();
     if (!key) { status.textContent = ERROR_TEXT.no_key; return; }
     const cases = pickCases(set.cases, Object.keys(langs).filter((l) => langs[l]), per);
-    if (!window.confirm(`Chạy ${cases.length} ca, ước khoảng ${(estimateCents(cases.length, model) / 100).toFixed(2)} USD. Tiếp tục?`)) return;
+    askInline(askSlot, `Chạy ${cases.length} ca, ước khoảng ${(estimateCents(cases.length, model) / 100).toFixed(2)} USD.`, "Chạy thật", () => run(key, cases));
+  });
+  async function run(key, cases) {
     running = true; stop = false; runBtn.disabled = true; stopBtn.hidden = false; dl.disabled = true;
     const rows = []; const usage = { input_tokens: 0, output_tokens: 0 };
     const started = new Date().toISOString();
@@ -57,7 +61,9 @@ function setup(ctx, box, set) {
       (rows.find((x) => x.error) ? ` · lỗi: ${ERROR_TEXT[rows.find((x) => x.error).error] || rows.find((x) => x.error).error}` : "");
     table.replaceChildren(renderSummary(sum));
     running = false; runBtn.disabled = false; stopBtn.hidden = true; dl.disabled = false;
-  });
+    // Also shown as text, so it can be read off the page without downloading a file.
+    resultText.textContent = JSON.stringify(last);
+  }
 
   box.replaceChildren(
     h("h2", { text: "Chọn" }),
@@ -69,7 +75,7 @@ function setup(ctx, box, set) {
       Object.entries(MODELS).map(([id, m]) => h("option", { value: id, selected: id === model, text: m.name })))),
     est,
     h("p", { class: "muted small", text: `Ước theo giá đo thật: một lần góp ý 3 lượt với ${MODELS[DEFAULT_MODEL].name} khoảng 3,6 xu USD.` }),
-    h("div", { class: "row" }, runBtn, stopBtn, dl), status, table,
+    h("div", { class: "row" }, runBtn, stopBtn, dl), askSlot, status, table, resultText,
     h("p", { class: "muted small", text: `Ngưỡng đặt trước: báo nhầm ≤ ${pct(THRESHOLDS.falseAlarmMax)} trên câu đúng; bắt lỗi ≥ ${pct(THRESHOLDS.catchMin)} trên câu sai. Câu mẫu: Tatoeba (tatoeba.org), CC BY 2.0 FR; câu sai do app cài lỗi vào.` }));
   refresh();
 }

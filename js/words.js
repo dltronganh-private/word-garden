@@ -65,3 +65,17 @@ export function hanvietFor(word, st) {
   if (st.settings.showHanviet && word.hanviet) return { text: word.hanviet, mine: false, note: word.hanvietStatus in HV_NOTE ? HV_NOTE[word.hanvietStatus] : "chưa kiểm" };
   return null;
 }
+
+/**
+ * "AI dịch" label and the "Nghĩa này có vẻ sai" button for meanings translated by AI.
+ * Returns an element, or null when the meaning is not AI-made. The flag is kept in st.notes[id].badMeaning.
+ */
+export function aiMeaningRow(word, st, save, h) {
+  if (word.meaningViSrc !== "ai" || !word.meaningVi) return null;
+  const flagged = !!(st.notes[word.id] && st.notes[word.id].badMeaning);
+  const btn = h("button", { class: "btn tiny ghost", text: flagged ? "Đã ghi lại" : "Nghĩa này có vẻ sai", disabled: flagged, onclick: () => {
+    st.notes[word.id] = { ...(st.notes[word.id] || {}), badMeaning: new Date().toISOString() };
+    save(); btn.textContent = "Đã ghi lại"; btn.disabled = true;
+  } });
+  return h("p", { class: "small" }, h("span", { class: "tag", text: "AI dịch" }), " ", btn);
+}

@@ -1,5 +1,5 @@
 // "Cài đặt": API key (stays in this browser), model, weekly minutes, deadlines, backup, and the sources screen.
-import { h, WEEKDAY_VI } from "./ui.js";
+import { h, WEEKDAY_VI, askInline } from "./ui.js";
 import { LANGS, LANG_VI, exportJSON, importJSON } from "./store.js";
 import { MODELS } from "./api.js";
 import { validatePack, indexPack } from "./words.js";
@@ -47,13 +47,16 @@ export function viewSettings(ctx) {
 
   out.append(packCard(ctx));
 
+  const backupSlot = h("div", { "aria-live": "polite" });
   const file = h("input", { type: "file", accept: "application/json,.json", hidden: true, onchange: async (e) => {
     const f = e.target.files[0]; if (!f) return;
+    e.target.value = "";
     try {
       const next = importJSON(await f.text());
-      if (!window.confirm("Thay toàn bộ tiến độ hiện tại bằng bản sao lưu này?")) return;
-      Object.keys(st).forEach((k) => delete st[k]); Object.assign(st, next); ctx.save(); ctx.go("today");
-    } catch (err) { window.alert(err.message); }
+      askInline(backupSlot, "Thay toàn bộ tiến độ hiện tại bằng bản sao lưu này?", "Thay", () => {
+        Object.keys(st).forEach((k) => delete st[k]); Object.assign(st, next); ctx.save(); ctx.go("today");
+      });
+    } catch (err) { backupSlot.replaceChildren(h("p", { class: "small", role: "alert", text: err.message })); }
   } });
   out.append(h("div", { class: "card" }, h("h2", { text: "Sao lưu" }),
     h("p", { class: "muted small", text: "Một số trình duyệt (Safari) có thể xoá dữ liệu nếu lâu không mở trang. Nên tải bản sao lưu mỗi tuần. File không chứa khoá API." }),
@@ -63,11 +66,12 @@ export function viewSettings(ctx) {
         const a = h("a", { href: URL.createObjectURL(blob), download: `hoc-ngoai-ngu-${new Date().toISOString().slice(0, 10)}.json` });
         document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
       } }),
-      h("button", { class: "btn", text: "Nhập bản sao lưu", onclick: () => file.click() })), file));
+      h("button", { class: "btn", text: "Nhập bản sao lưu", onclick: () => file.click() })), backupSlot, file));
 
   out.append(h("button", { class: "card row-btn", onclick: () => ctx.go("sources") }, h("span", { text: "Nguồn dữ liệu và giấy phép" }), h("span", { text: "›" })));
   // The test set is a tool for whoever runs the app locally, not for the public page.
   if (["localhost", "127.0.0.1"].includes(location.hostname)) out.append(h("button", { class: "card row-btn", onclick: () => ctx.go("eval") }, h("span", { text: "Bộ kiểm góp ý AI (người làm app)" }), h("span", { text: "›" })));
+  if (["localhost", "127.0.0.1"].includes(location.hostname)) out.append(h("button", { class: "card row-btn", onclick: () => ctx.go("translate") }, h("span", { text: "Dịch nghĩa tiếng Nhật bằng AI (người làm app)" }), h("span", { text: "›" })));
   return out;
 }
 
@@ -90,10 +94,9 @@ function packCard(ctx) {
     h("p", { class: "small", text: has ? `Đã có gói: ${p.words.length} từ. Gói nằm trong trình duyệt này.` : "Chưa có gói. Gói tiếng Trung được gửi riêng dưới dạng một file; nhập một lần là xong." }),
     h("div", { class: "row" },
       h("button", { class: "btn" + (has ? "" : " primary"), text: has ? "Nhập lại gói" : "Nhập gói tiếng Trung", onclick: () => input.click() }),
-      has ? h("button", { class: "btn", text: "Xoá gói", onclick: () => {
-        if (!window.confirm("Xoá gói từ tiếng Trung khỏi trình duyệt? Thẻ đã học vẫn giữ.")) return;
+      has ? h("button", { class: "btn", text: "Xoá gói", onclick: () => askInline(msg, "Xoá gói từ tiếng Trung khỏi trình duyệt? Thẻ đã học vẫn giữ.", "Xoá gói", () => {
         store.clearPack("zh"); ctx.packs.zh = indexPack({ lang: "zh", meta: { missing: true }, words: [] }); ctx.render();
-      } }) : null),
+      }) }) : null),
     msg, input);
 }
 
@@ -104,6 +107,7 @@ const SOURCES = [
   ["Danh sách cấp HSK gốc", "© CTI / 教育部中外语言交流合作中心 (chinesetest.cn)", "bản quyền của chủ sở hữu", "https://www.chinesetest.cn/"],
   ["Từ vựng JLPT N3–N2 và nghĩa tiếng Anh", "Jonathan Waller, JLPT Resources (qua stephenmk/yomitan-jlpt-vocab)", "CC BY", "https://github.com/stephenmk/yomitan-jlpt-vocab"],
   ["Nghĩa tiếng Việt của một số từ tiếng Nhật", "Wiktionary tiếng Việt (vi.wiktionary.org), qua bản trích của kaikki.org", "CC BY-SA 4.0", "https://vi.wiktionary.org/wiki/Wiktionary:Gi%E1%BA%A5y_ph%C3%A9p"],
+  ["Nghĩa tiếng Việt của phần lớn từ tiếng Nhật (gắn nhãn “AI dịch”)", "Dịch bằng AI (Claude, Anthropic) từ nghĩa tiếng Anh của Jonathan Waller; có thể sai", "nghĩa gốc: CC BY", null],
   ["Từ điển tiếng Nhật (mã JMdict của từ)", "JMdict, Electronic Dictionary Research and Development Group", "CC BY-SA 4.0", "https://www.edrdg.org/edrdg/licence.html"],
   ["Từ vựng tiếng Hàn, nghĩa tiếng Việt, chữ Hán gốc", "국립국어원 한국어기초사전 (krdict.korean.go.kr), bản tải trọn bộ 19/11/2026", "CC BY-SA 2.0 KR", "https://krdict.korean.go.kr/kor/kboardPolicy/copyRightTermsInfo"],
   ["Âm Hán Việt (theo chữ và theo từ)", "Wiktionary tiếng Anh, mục tiếng Việt, qua bản trích Wiktextract của kaikki.org (Tatu Ylonen)", "CC BY-SA 4.0", "https://en.wiktionary.org/wiki/Wiktionary:Copyrights"],
